@@ -22,9 +22,8 @@ struct Iniciativa{
 struct Iniciativa* removerLutador(struct Iniciativa *head, int id);
 
 
-
-
 int main(){
+    srand(time(NULL));
     int opcao = menuPrincipal();
     while(opcao!=0){
         switch(opcao){
@@ -57,10 +56,9 @@ void iniciarJogo(){
     iniciativa->next = NULL;
     iniciativa->l = NULL;
     organizacaoTime(iniciativa);
+    insertion_sort(iniciativa);
+    statusLutadores(iniciativa);
 
-     /*
-     sort iniciativa - decrescente
-    */
      /*
      separar times de iniciativa - separação de times
     */
@@ -89,6 +87,7 @@ void organizacaoTime(struct Iniciativa *iniciativa){
                 system("pause");
                 break;
             case 2:
+
                 statusLutadores(iniciativa);
                 system("pause");
                 break;
@@ -127,28 +126,47 @@ void organizacaoTime(struct Iniciativa *iniciativa){
 }
 
 
-
-
 void insertion_sort(struct Iniciativa *head){
-    struct Iniciativa *proximo = head->next;
+    struct Iniciativa *proximo = head;
+
 
     while(proximo != NULL){
         struct Iniciativa *aux = head;
 
-        if(proximo->l->iniciativa > aux->l->iniciativa ){
-            struct Lutador *lut = proximo->l;
-            proximo->l = aux->l;
+        if(proximo->next->l->iniciativa > aux->l->iniciativa ){
+            struct Lutador *lut = proximo->next->l;
+            proximo->next->l = aux->l;
             aux->l = lut;
 
             continue;
         }
 
-        while(aux->next !=NULL && proximo->l->iniciativa < aux->next->l->iniciativa && aux->next != proximo){
-            aux = aux->next;
-        }
 
+
+        while(aux->next !=NULL && proximo->next->l->iniciativa < aux->next->l->iniciativa && aux->next != proximo->next){
+            aux = aux->next;
+            /*
+            1.(3)->[5]->2->4->7->1->0->6
+            2.(5)->[3]->2->4->7->1->0->6
+            3.(5)->3->[2]->4->7->1->0->6
+            4.5->(3)->[2]->4->7->1->0->6
+            5.(5)->3->2->[4]->7->1->0->6
+            6.5->(3)->2->[4]->7->1->0->6
+            7.(5)->4->3->2->[7]->1->0->6
+            8.(7)->4->3->2->[5]->1->0->6
+            9.7->(4)->3->2->[5]->1->0->6
+            10.(7)->5->4->3->2->[1]->0->6
+            */
+        }
+        struct Iniciativa *init = proximo->next;
+        proximo->next = proximo->next->next;
+        init->next = aux->next;
+        aux->next = init;
+
+        proximo = proximo->next;
 
     }
+
 
 }
 
@@ -167,7 +185,7 @@ void insercaoLutador(struct Iniciativa *iniciativa){
     novoLutador->l->time = timeLutador;
     novoLutador->l->valorDano = 20;
     novoLutador->l->pontosVida = 20;
-    novoLutador->l->iniciativa = 20;
+    novoLutador->l->iniciativa = 1 + (rand() % 100);
 
     if(iniciativa->l != NULL){
         iniciativa->next = novoLutador;
