@@ -30,9 +30,7 @@ int main(){
         switch(opcao){
             case 1:
                 system("cls");
-
                 iniciarJogo();
-
                 break;
             case 2:
                 exit(0);
@@ -42,11 +40,8 @@ int main(){
                 system("pause");
                 break;
         }
-
         opcao = menuPrincipal();
-
     }
-
     return 0;
 }
 
@@ -55,84 +50,121 @@ int main(){
 
 void iniciarJogo(){
     struct Iniciativa *iniciativa = malloc(sizeof (struct Iniciativa));
+    struct Iniciativa *time1 = malloc(sizeof(struct Iniciativa));
+    struct Iniciativa *time2 = malloc(sizeof(struct Iniciativa));
+
+
     iniciativa->next = NULL;
     iniciativa->l = NULL;
     organizacaoTime(iniciativa);
 
-
+     /*
+     sort iniciativa - decrescente
+    */
+     /*
+     separar times de iniciativa - separação de times
+    */
+     /*
+     iniciar combate
+    */
 }
 
 void organizacaoTime(struct Iniciativa *iniciativa){
+
     int opcao;
     int id;
     struct Iniciativa *last = iniciativa;
 
     while(1){
         system("cls");
-        printf("1. insercao\n");
-        printf("2. status \n");
-        printf("3. fuga\n");
-        printf("4. voltar\n");
-
-        scanf("%d",&opcao);
-
+        int opcao = menuPrincipal2();
         switch(opcao){
-        case 1:
+            case 1:
+                insercaoLutador(last);
+                if(last->next != NULL){
+                    last = last-> next;
+                 }
 
-             insercaoLutador(last);
-             if(last->next != NULL){
-                last = last-> next;
-             }
-             printf("Adicionado !\n");
-             system("pause");
-             break;
-        case 2:
-             printf("status");
-             statusLutadores(iniciativa);
-             system("pause");
-             break;
-        case 3:
+                printf("\n -> JOGADOR ADICIONADO COM SUCESSO!! \n\n");
+                system("pause");
+                break;
+            case 2:
+                statusLutadores(iniciativa);
+                system("pause");
+                break;
+            case 3:
+                if(iniciativa->l == NULL){
+                    printf("\n|====================================|\n");
+                    printf("| -> POR FAVOR INSIRA LUTADORES      |\n");
+                    printf("|====================================|\n");
+                    system("pause");
+                    break;
 
-             printf("informe o id:");
-             scanf("%d",&id);
+                }
+                printf("|INFORME O ID DO LUTADOR: ");
+                scanf("%d",&id);
 
-             struct Iniciativa *aux = removerLutador(iniciativa,id);
-             if(aux != NULL){
+                struct Iniciativa *aux = removerLutador(iniciativa,id);
+
+                if(aux != NULL){
                     last = aux;
+                 }
 
-             }
-             system("pause");
-             break;
-        case 4:
-            printf("voce saiu\n");
-            break;
-            break;
-        default:
-            printf("opcao invalida \n");
+                system("pause");
+                break;
+            case 4:
+                break;
+            default:
+                printf("opcao invalida \n");
+                system("pause");
+        }
 
+        if(opcao == 4){
+            break;                                 //mexi aqui
         }
 
     }
-
-
-
-
-
-
-
 }
 
 
 
+
+void insertion_sort(struct Iniciativa *head){
+    struct Iniciativa *proximo = head->next;
+
+    while(proximo != NULL){
+        struct Iniciativa *aux = head;
+
+        if(proximo->l->iniciativa > aux->l->iniciativa ){
+            struct Lutador *lut = proximo->l;
+            proximo->l = aux->l;
+            aux->l = lut;
+
+            continue;
+        }
+
+        while(aux->next !=NULL && proximo->l->iniciativa < aux->next->l->iniciativa && aux->next != proximo){
+            aux = aux->next;
+        }
+
+
+    }
+
+}
+
+
 void insercaoLutador(struct Iniciativa *iniciativa){
-    static int k=0;
+    static int k=1;
+    int timeLutador;                                                            //MEXI AQUI
     struct Iniciativa *novoLutador = malloc(sizeof(struct Iniciativa));
 
     novoLutador->l = malloc (sizeof(struct Lutador));
     novoLutador->next = NULL;
 
     novoLutador->l->id = k++;
-    novoLutador->l->time = 1;
+    printf("\nTime 1 ou 2:");                                                   //MEXI AQUI
+    scanf("%d",&timeLutador);
+    novoLutador->l->time = timeLutador;
     novoLutador->l->valorDano = 20;
     novoLutador->l->pontosVida = 20;
     novoLutador->l->iniciativa = 20;
@@ -147,35 +179,38 @@ void insercaoLutador(struct Iniciativa *iniciativa){
 }
 
 
-
-
 void statusLutadores(struct Iniciativa *head){
     int i =1;
-    printf("========================\n");
-    while(head != NULL){
-        printf("%d\n",i);
-        printf("iniciativa: %d\n",head->l->iniciativa);
-        printf("id: %d\n",head->l->id);
-        printf("pontos de vida: %d\n",head->l->pontosVida);
-        printf("Time: %d\n",head->l->time);
-        printf("valor Dano: %d\n",head->l->valorDano);
-        printf("========================\n");
+    printf("\n|====================================|\n");                                 //eu mexi aqui
+    if(i == 1 && head->l == NULL){
+        printf("| -> POR FAVOR INSIRA LUTADORES      |\n");
+        printf("|====================================|\n");
+    }else{
+        while(head != NULL){
+            printf("|                  %d                 |\n",i);
+            printf("|ID:             | %d                 |\n",head->l->id);
+            printf("|Time:           | %d                 |\n",head->l->time);
+            printf("|Iniciativa:     | %d                |\n",head->l->iniciativa);
+            printf("|Valor Dano:     | %d                |\n",head->l->valorDano);
+            printf("|Pontos de vida: | %d                |\n",head->l->pontosVida);
+            printf("|====================================|\n");
 
-        head = head->next;
-        i++;
+            head = head->next;
+            i++;
+        }
     }
-
-
-
-
 }
-
-
-
 
 
 struct Iniciativa* removerLutador(struct Iniciativa *head, int id){
     struct Iniciativa *proximo;
+
+    if(head->next == NULL){
+        free(head->l);
+        head->l = NULL;
+        return NULL;
+
+    }
 
     if(head != NULL && head->l->id == id){
         free(head->l);
@@ -188,22 +223,24 @@ struct Iniciativa* removerLutador(struct Iniciativa *head, int id){
 
 
     while(head != NULL){
-        proximo = head->next;
-        if(proximo != NULL && proximo->l->id == id){
-            head->next = proximo->next;
-            free(proximo);
-            break;
+            proximo = head->next;
+            if(proximo != NULL && proximo->l->id == id){
+                head->next = proximo->next;
+                free(proximo);
+                break;
+            }
+
+            head = head->next;
         }
 
-        head = head->next;
-    }
+
     if (head->next != NULL){
         return NULL;
     }
+
+
     return head;
 }
-
-
 
 
 int  menuPrincipal(){
@@ -221,6 +258,31 @@ int  menuPrincipal(){
     printf("|=================================================================================|\n");
     printf("|                              1 - INICIAR                                        |\n");
     printf("|                              2 - SAIR DO JOGO                                   |\n");
+    printf("|=================================================================================|\n");
+    printf("|=================================================================================|\n");
+    printf("| DIGITE A OPCAO DESEJADA:");
+    scanf("%i",&opcao);
+    return opcao;
+}
+
+
+int  menuPrincipal2(){
+    int opcao=0;
+    system("cls");
+
+    printf("|=================================================================================|\n");
+    printf("|=================================================================================|\n");
+    printf("|                        0      0  00000  0      0  00     00                     |\n");
+    printf("|                        00    00  0      0 0    0  00     00                     |\n");
+    printf("|                        0  00  0  0000   0   0  0  00     00                     |\n");
+    printf("|                        0      0  0      0     00  00     00                     |\n");
+    printf("|                        0      0  00000  0      0  000000000                     |\n");
+    printf("|=================================================================================|\n");
+    printf("|=================================================================================|\n");
+    printf("|                              1 - INSERIR JOGADOR                                |\n");
+    printf("|                              2 - STATUS DOS TIMES                               |\n");
+    printf("|                              3 - FUGA DE LUTADOR                                |\n");
+    printf("|                              4 - VOLTAR                                         |\n");
     printf("|=================================================================================|\n");
     printf("|=================================================================================|\n");
     printf("| DIGITE A OPCAO DESEJADA:");
