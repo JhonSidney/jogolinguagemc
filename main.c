@@ -58,12 +58,15 @@ void iniciarJogo(){
     organizacaoTime(iniciativa);
     insertion_sort(iniciativa);
     statusLutadores(iniciativa);
+    iniciarCombate(time1,time2);
 
-     /*
-     separar times de iniciativa - separação de times
+    /*
+
+    Separação dos times(iniciativa, time1, time2);
+
     */
      /*
-     iniciar combate
+     iniciar combate(time1, time2, iniciativa);
     */
 }
 
@@ -127,7 +130,13 @@ void organizacaoTime(struct Iniciativa *iniciativa){
 
 
 
+void iniciarCombate(struct Iniciativa *time1, struct Iniciativa *time2){
 
+    // to so lendo o documento
+
+
+
+}
 
 
 
