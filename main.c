@@ -126,50 +126,40 @@ void organizacaoTime(struct Iniciativa *iniciativa){
 }
 
 
-void insertion_sort(struct Iniciativa *head){
-    struct Iniciativa *proximo = head;
 
+
+
+
+
+void insertion_sort(struct Iniciativa *head){
+    struct Iniciativa *proximo = head->next;
+    struct Iniciativa *anterior = NULL;
 
     while(proximo != NULL){
         struct Iniciativa *aux = head;
 
-        if(proximo->next->l->iniciativa > aux->l->iniciativa ){
-            struct Lutador *lut = proximo->next->l;
-            proximo->next->l = aux->l;
+        if(proximo != NULL && proximo->l->iniciativa > aux->l->iniciativa ){
+            struct Lutador *lut = proximo->l;
+            proximo->l = aux->l;
             aux->l = lut;
-
             continue;
         }
 
-
-
-        while(aux->next !=NULL && proximo->next->l->iniciativa < aux->next->l->iniciativa && aux->next != proximo->next){
+        while(aux->next !=NULL && proximo->l->iniciativa < aux->next->l->iniciativa && aux->next != proximo){
             aux = aux->next;
-            /*
-            1.(3)->[5]->2->4->7->1->0->6
-            2.(5)->[3]->2->4->7->1->0->6
-            3.(5)->3->[2]->4->7->1->0->6
-            4.5->(3)->[2]->4->7->1->0->6
-            5.(5)->3->2->[4]->7->1->0->6
-            6.5->(3)->2->[4]->7->1->0->6
-            7.(5)->4->3->2->[7]->1->0->6
-            8.(7)->4->3->2->[5]->1->0->6
-            9.7->(4)->3->2->[5]->1->0->6
-            10.(7)->5->4->3->2->[1]->0->6
-            */
         }
-        struct Iniciativa *init = proximo->next;
-        proximo->next = proximo->next->next;
-        init->next = aux->next;
-        aux->next = init;
 
+        if(anterior != NULL) {
+            struct Iniciativa *init = proximo;
+            anterior->next = proximo->next;
+            init->next = aux->next;
+            aux->next = init;
+        }
+
+        anterior = proximo;
         proximo = proximo->next;
-
     }
-
-
 }
-
 
 void insercaoLutador(struct Iniciativa *iniciativa){
     static int k=1;
@@ -198,20 +188,28 @@ void insercaoLutador(struct Iniciativa *iniciativa){
 
 
 void statusLutadores(struct Iniciativa *head){
+    int opcao;
     int i =1;
     printf("\n|====================================|\n");                                 //eu mexi aqui
     if(i == 1 && head->l == NULL){
         printf("| -> POR FAVOR INSIRA LUTADORES      |\n");
         printf("|====================================|\n");
     }else{
+
+        printf("\n Listar time:");
+        scanf("%d",&opcao);
+
         while(head != NULL){
-            printf("|                  %d                 |\n",i);
-            printf("|ID:             | %d                 |\n",head->l->id);
-            printf("|Time:           | %d                 |\n",head->l->time);
-            printf("|Iniciativa:     | %d                |\n",head->l->iniciativa);
-            printf("|Valor Dano:     | %d                |\n",head->l->valorDano);
-            printf("|Pontos de vida: | %d                |\n",head->l->pontosVida);
-            printf("|====================================|\n");
+
+            if(opcao == head->l->time){
+                 printf("|                  %d                 |\n",i);
+                 printf("|ID:             | %d                 |\n",head->l->id);
+                 printf("|Time:           | %d                 |\n",head->l->time);
+                 printf("|Iniciativa:     | %d                |\n",head->l->iniciativa);
+                 printf("|Valor Dano:     | %d                |\n",head->l->valorDano);
+                 printf("|Pontos de vida: | %d                |\n",head->l->pontosVida);
+                 printf("|====================================|\n");
+            }
 
             head = head->next;
             i++;
