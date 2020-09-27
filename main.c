@@ -22,9 +22,8 @@ struct Iniciativa{
 struct Iniciativa* removerLutador(struct Iniciativa *head, int id);
 
 
-
-
 int main(){
+    srand(time(NULL));
     int opcao = menuPrincipal();
     while(opcao!=0){
         switch(opcao){
@@ -57,10 +56,9 @@ void iniciarJogo(){
     iniciativa->next = NULL;
     iniciativa->l = NULL;
     organizacaoTime(iniciativa);
+    insertion_sort(iniciativa);
+    statusLutadores(iniciativa);
 
-     /*
-     sort iniciativa - decrescente
-    */
      /*
      separar times de iniciativa - separação de times
     */
@@ -89,6 +87,7 @@ void organizacaoTime(struct Iniciativa *iniciativa){
                 system("pause");
                 break;
             case 2:
+
                 statusLutadores(iniciativa);
                 system("pause");
                 break;
@@ -129,17 +128,20 @@ void organizacaoTime(struct Iniciativa *iniciativa){
 
 
 
+
+
+
 void insertion_sort(struct Iniciativa *head){
     struct Iniciativa *proximo = head->next;
+    struct Iniciativa *anterior = NULL;
 
     while(proximo != NULL){
         struct Iniciativa *aux = head;
 
-        if(proximo->l->iniciativa > aux->l->iniciativa ){
+        if(proximo != NULL && proximo->l->iniciativa > aux->l->iniciativa ){
             struct Lutador *lut = proximo->l;
             proximo->l = aux->l;
             aux->l = lut;
-
             continue;
         }
 
@@ -147,11 +149,17 @@ void insertion_sort(struct Iniciativa *head){
             aux = aux->next;
         }
 
+        if(anterior != NULL) {
+            struct Iniciativa *init = proximo;
+            anterior->next = proximo->next;
+            init->next = aux->next;
+            aux->next = init;
+        }
 
+        anterior = proximo;
+        proximo = proximo->next;
     }
-
 }
-
 
 void insercaoLutador(struct Iniciativa *iniciativa){
     static int k=1;
@@ -167,7 +175,7 @@ void insercaoLutador(struct Iniciativa *iniciativa){
     novoLutador->l->time = timeLutador;
     novoLutador->l->valorDano = 20;
     novoLutador->l->pontosVida = 20;
-    novoLutador->l->iniciativa = 20;
+    novoLutador->l->iniciativa = 1 + (rand() % 100);
 
     if(iniciativa->l != NULL){
         iniciativa->next = novoLutador;
@@ -180,20 +188,28 @@ void insercaoLutador(struct Iniciativa *iniciativa){
 
 
 void statusLutadores(struct Iniciativa *head){
+    int opcao;
     int i =1;
     printf("\n|====================================|\n");                                 //eu mexi aqui
     if(i == 1 && head->l == NULL){
         printf("| -> POR FAVOR INSIRA LUTADORES      |\n");
         printf("|====================================|\n");
     }else{
+
+        printf("\n Listar time:");
+        scanf("%d",&opcao);
+
         while(head != NULL){
-            printf("|                  %d                 |\n",i);
-            printf("|ID:             | %d                 |\n",head->l->id);
-            printf("|Time:           | %d                 |\n",head->l->time);
-            printf("|Iniciativa:     | %d                |\n",head->l->iniciativa);
-            printf("|Valor Dano:     | %d                |\n",head->l->valorDano);
-            printf("|Pontos de vida: | %d                |\n",head->l->pontosVida);
-            printf("|====================================|\n");
+
+            if(opcao == head->l->time){
+                 printf("|                  %d                 |\n",i);
+                 printf("|ID:             | %d                 |\n",head->l->id);
+                 printf("|Time:           | %d                 |\n",head->l->time);
+                 printf("|Iniciativa:     | %d                |\n",head->l->iniciativa);
+                 printf("|Valor Dano:     | %d                |\n",head->l->valorDano);
+                 printf("|Pontos de vida: | %d                |\n",head->l->pontosVida);
+                 printf("|====================================|\n");
+            }
 
             head = head->next;
             i++;
